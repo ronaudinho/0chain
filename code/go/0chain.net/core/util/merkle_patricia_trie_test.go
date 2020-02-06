@@ -395,3 +395,17 @@ func TestAddTwiceDeleteOnce(t *testing.T) {
 	mpt2.PrettyPrint(os.Stdout)
 
 }
+
+func TestAddSameNodeTwice(t *testing.T) {
+	cc := NewChangeCollector()
+	mndb := NewMemoryNodeDB()
+	mpt := NewMerklePatriciaTrie(mndb, Sequence(0))
+	db := NewLevelNodeDB(NewMemoryNodeDB(), mpt.DB, false)
+	mpt2 := NewMerklePatriciaTrie(db, Sequence(0))
+
+	doStrValInsert("setup data", mpt2, "123456781", "x", false)
+	doStrValInsert("setup data", mpt2, "123456782", "y", false)
+	doStrValInsert("setup data", mpt2, "123456782", "y", false)
+
+	doGetStrValue(mpt2, "123456782", "y")
+}

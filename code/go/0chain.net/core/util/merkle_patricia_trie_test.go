@@ -397,7 +397,6 @@ func TestAddTwiceDeleteOnce(t *testing.T) {
 }
 
 func TestAddSameNodeTwice(t *testing.T) {
-	cc := NewChangeCollector()
 	mndb := NewMemoryNodeDB()
 	mpt := NewMerklePatriciaTrie(mndb, Sequence(0))
 	db := NewLevelNodeDB(NewMemoryNodeDB(), mpt.DB, false)
@@ -407,5 +406,72 @@ func TestAddSameNodeTwice(t *testing.T) {
 	doStrValInsert("setup data", mpt2, "123456782", "y", false)
 	doStrValInsert("setup data", mpt2, "123456782", "y", false)
 
+	doGetStrValue(mpt2, "123456781", "x")
 	doGetStrValue(mpt2, "123456782", "y")
+}
+
+func TestDeleteAll(t *testing.T) {
+	mndb := NewMemoryNodeDB()
+	mpt := NewMerklePatriciaTrie(mndb, Sequence(0))
+	db := NewLevelNodeDB(NewMemoryNodeDB(), mpt.DB, false)
+	mpt2 := NewMerklePatriciaTrie(db, Sequence(0))
+
+	// Insert random data
+	doStrValInsert("setup data", mpt2, "759127", "x", false)
+	doStrValInsert("setup data", mpt2, "2a8ab92718", "x", false)
+	doStrValInsert("setup data", mpt2, "f6e4c45", "x", false)
+	doStrValInsert("setup data", mpt2, "d5794adb3", "x", false)
+	doStrValInsert("setup data", mpt2, "af95", "x", false)
+	doStrValInsert("setup data", mpt2, "b", "x", false)
+	doStrValInsert("setup data", mpt2, "2638deb68e2d5c", "x", false)
+	doStrValInsert("setup data", mpt2, "2b7d43ead4d", "x", false)
+	doStrValInsert("setup data", mpt2, "df6", "x", false)
+	doStrValInsert("setup data", mpt2, "38c8ea1ef1", "y", false)
+	doStrValInsert("setup data", mpt2, "d945bf", "y", false)
+	doStrValInsert("setup data", mpt2, "f7a4", "y", false)
+	doStrValInsert("setup data", mpt2, "9c538", "y", false)
+	doStrValInsert("setup data", mpt2, "b53", "y", false)
+	doStrValInsert("setup data", mpt2, "8494f", "y", false)
+	doStrValInsert("setup data", mpt2, "da84", "y", false)
+	doStrValInsert("setup data", mpt2, "f6", "y", false)
+
+	// Delete every node
+	doDelete("delete data", mpt2, "759127", false)
+	doDelete("delete data", mpt2, "2a8ab92718", false)
+	doDelete("delete data", mpt2, "f6e4c45", false)
+	doDelete("delete data", mpt2, "d5794adb3", false)
+	doDelete("delete data", mpt2, "af95", false)
+	doDelete("delete data", mpt2, "b", false)
+	doDelete("delete data", mpt2, "2638deb68e2d5c", false)
+	doDelete("delete data", mpt2, "2b7d43ead4d", false)
+	doDelete("delete data", mpt2, "df6", false)
+	doDelete("delete data", mpt2, "38c8ea1ef1", false)
+	doDelete("delete data", mpt2, "d945bf", false)
+	doDelete("delete data", mpt2, "f7a4", false)
+	doDelete("delete data", mpt2, "9c538", false)
+	doDelete("delete data", mpt2, "b53", false)
+	doDelete("delete data", mpt2, "8494f", false)
+	doDelete("delete data", mpt2, "da84", false)
+	doDelete("delete data", mpt2, "f6", false)
+
+    doGetStrValue(mpt2, "759127", "")
+	doGetStrValue(mpt2, "2a8ab92718", "")
+	doGetStrValue(mpt2, "f6e4c45", "")
+	doGetStrValue(mpt2, "d5794adb3", "")
+	doGetStrValue(mpt2, "af95", "")
+	doGetStrValue(mpt2, "b", "")
+	doGetStrValue(mpt2, "2638deb68e2d5c", "")
+	doGetStrValue(mpt2, "2b7d43ead4d", "")
+	doGetStrValue(mpt2, "df6", "")
+	doGetStrValue(mpt2, "38c8ea1ef1", "")
+	doGetStrValue(mpt2, "d945bf", "")
+	doGetStrValue(mpt2, "f7a4", "")
+	doGetStrValue(mpt2, "9c538", "")
+	doGetStrValue(mpt2, "b53", "")
+	doGetStrValue(mpt2, "8494f", "")
+	doGetStrValue(mpt2, "da84", "")
+	doGetStrValue(mpt2, "f6", "")
+	if len(mpt2.GetRoot()) != 0 {
+		t.Error("tree is not empty")
+	}
 }

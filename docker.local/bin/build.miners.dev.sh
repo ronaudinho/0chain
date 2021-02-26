@@ -4,6 +4,11 @@ set -e
 GIT_COMMIT=$(git rev-list -1 HEAD)
 echo $GIT_COMMIT
 
+# Build it locally
+TOP="$PWD"
+cd $TOP/code/go/0chain.net/miner/miner && go build -v -tags "bn256 development" -ldflags "-X 0chain.net/core/build.BuildTag=$GIT_COMMIT"
+cd $TOP
+
 docker build --build-arg GIT_COMMIT=$GIT_COMMIT -f docker.local/build.miner.dev/Dockerfile . -t miner
 
 for i in $(seq 1 5);

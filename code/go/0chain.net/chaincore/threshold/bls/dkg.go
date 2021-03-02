@@ -18,7 +18,7 @@ import (
 /*DKG - to manage DKG process */
 type DKG struct {
 	T  int
-	// N  int
+	N  int
 	ID PartyID
 
 	Msk []Key
